@@ -3,14 +3,22 @@
 // Import required modules
 const express = require('express');
 const bodyParser = require('body-parser');
-const { v4: uuidv4 } = require('uuid');
+// const { v4: uuidv4 } = require('uuid');
+
+const dotenv = require('dotenv');
+const productRoutes = require('./routes/productRoutes');
+const logger = require('./middleware/logger');
+
+dotenv.config();
 
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware setup
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // for parsing application / json
+// app.use(express.json())
+app.use(logger); // custom logger middleware
 
 // Sample in-memory products database
 let products = [
@@ -53,14 +61,23 @@ app.get('/', (req, res) => {
 // DELETE /api/products/:id - Delete a product
 
 // Example route implementation for GET /api/products
+// for testing
 app.get('/api/products', (req, res) => {
   res.json(products);
 });
+
+// Mount product routes
+app.use('/api/products', productRoutes);
 
 // TODO: Implement custom middleware for:
 // - Request logging
 // - Authentication
 // - Error handling
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+  });
+});
 
 // Start the server
 app.listen(PORT, () => {
