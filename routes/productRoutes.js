@@ -4,6 +4,8 @@ const controller = require('../controllers/productController');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validateProduct');
 
+app.use(logger);
+
 router.get('/', controller.getAll);
 router.get('/:id', controller.getById);
 router.post('/', auth, validate, controller.create);

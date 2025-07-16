@@ -79,6 +79,13 @@ app.use((err, req, res, next) => {
   });
 });
 
+try {
+  const productRoutes = require('./routes/productRoutes');
+  app.use('/api/products', productRoutes);
+} catch (error) {
+  console.error("Error loading routes:", error);
+}
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
